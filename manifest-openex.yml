@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: customer-all
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: map-openex
+  namespace: customer-all
+  labels:
+    app: map-openex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: map-openex
+  template:
+    metadata:
+      namespace: customer-all
+      labels:
+        app: map-openex
+    spec:
+      containers:
+        - name: openmaptiles-server
+          image: klokantech/openmaptiles-server:latest        
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            limits:
+              memory: "2048Mi"
+              cpu: "1"
+          volumeMounts:
+            - name: map-openex-data
+              mountPath: /data
+      volumes:
+        - name: map-openex-data
+          persistentVolumeClaim:
+            claimName: pvc-map-openex
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-map-openex
+  namespace: customer-all
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: le-prod
+    external-dns.alpha.kubernetes.io/hostname: map.openex.io
+    external-dns.alpha.kubernetes.io/ttl: "120"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^/?$ https://map.openex.io/styles/filigran-dark/#2/0/0 permanent;
+      rewrite ^/styles/luatix-(.*)$ https://map.openex.io/styles/filigran-$1 permanent;
+  name: map-openex-ingress
+  namespace: customer-all
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: map.openex.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: map-openex
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - map.openex.io
+    secretName: map-openex-cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: map-openex
+  namespace: customer-all
+spec:
+  ports:
+  - name: map-openex
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: map-openex
+  type: ClusterIP
