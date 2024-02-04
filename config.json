@@ -3,7 +3,9 @@
     "standard": [],
     "custom": [
       "filigran-dark.json",
-      "filigran-light.json"
+      "filigran-light.json",
+      "filigran-dark2.json",
+      "filigran-light2.json"
     ],
     "lang": "",
     "langLatin": true,

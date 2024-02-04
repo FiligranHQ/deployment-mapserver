@@ -59,8 +59,7 @@ metadata:
     external-dns.alpha.kubernetes.io/hostname: map.opencti.io
     external-dns.alpha.kubernetes.io/ttl: "120"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^/?$ https://map.opencti.io/styles/filigran-dark/#2/0/0 permanent;
-      rewrite ^/styles/luatix-(.*)$ https://map.opencti.io/styles/filigran-$1 permanent;
+      rewrite ^/?$ https://map.opencti.io/styles/filigran-dark2/#2/0/0 permanent;
   name: map-opencti-ingress
   namespace: customer-all
 spec:
