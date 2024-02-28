@@ -80,6 +80,36 @@ spec:
     - map.openex.io
     secretName: map-openex-cert
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: le-prod
+    external-dns.alpha.kubernetes.io/hostname: map.openbas.io
+    external-dns.alpha.kubernetes.io/ttl: "120"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^/?$ https://map.openbas.io/styles/filigran-dark/#2/0/0 permanent;
+      rewrite ^/styles/luatix-(.*)$ https://map.openbas.io/styles/filigran-$1 permanent;
+  name: map-openbas-ingress
+  namespace: customer-all
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: map.openbas.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: map-openex
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - map.openbas.io
+    secretName: map-openbas-cert
+---
 apiVersion: v1
 kind: Service
 metadata:
