@@ -6,20 +6,20 @@ metadata:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: map-openex
+  name: map-openbas
   namespace: customer-all
   labels:
-    app: map-openex
+    app: map-openbas
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: map-openex
+      app: map-openbas
   template:
     metadata:
       namespace: customer-all
       labels:
-        app: map-openex
+        app: map-openbas
     spec:
       containers:
         - name: openmaptiles-server
@@ -32,17 +32,17 @@ spec:
               memory: "2048Mi"
               cpu: "1"
           volumeMounts:
-            - name: map-openex-data
+            - name: map-openbas-data
               mountPath: /data
       volumes:
-        - name: map-openex-data
+        - name: map-openbas-data
           persistentVolumeClaim:
-            claimName: pvc-map-openex
+            claimName: pvc-map-openbas
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-map-openex
+  name: pvc-map-openbas
   namespace: customer-all
 spec:
   accessModes:
@@ -56,29 +56,29 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: le-prod
-    external-dns.alpha.kubernetes.io/hostname: map.openex.io
+    external-dns.alpha.kubernetes.io/hostname: map.openbas.io
     external-dns.alpha.kubernetes.io/ttl: "120"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^/?$ https://map.openex.io/styles/filigran-dark2/#2/0/0 permanent;
-  name: map-openex-ingress
+      rewrite ^/?$ https://map.openbas.io/styles/filigran-dark2/#2/0/0 permanent;
+  name: map-openbas-ingress
   namespace: customer-all
 spec:
   ingressClassName: nginx
   rules:
-  - host: map.openex.io
+  - host: map.openbas.io
     http:
       paths:
       - backend:
           service:
-            name: map-openex
+            name: map-openbas
             port:
               number: 80
         path: /
         pathType: Prefix
   tls:
   - hosts:
-    - map.openex.io
-    secretName: map-openex-cert
+    - map.openbas.io
+    secretName: map-openbas-cert
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -100,7 +100,7 @@ spec:
       paths:
       - backend:
           service:
-            name: map-openex
+            name: map-openbas
             port:
               number: 80
         path: /
@@ -113,14 +113,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: map-openex
+  name: map-openbas
   namespace: customer-all
 spec:
   ports:
-  - name: map-openex
+  - name: map-openbas
     port: 80
     protocol: TCP
     targetPort: 80
   selector:
-    app: map-openex
+    app: map-openbas
   type: ClusterIP
