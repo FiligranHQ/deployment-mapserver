@@ -6,20 +6,20 @@ metadata:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: map-openbas
+  name: map-openaev
   namespace: customer-all
   labels:
-    app: map-openbas
+    app: map-openaev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: map-openbas
+      app: map-openaev
   template:
     metadata:
       namespace: customer-all
       labels:
-        app: map-openbas
+        app: map-openaev
     spec:
       containers:
         - name: openmaptiles-server
@@ -32,17 +32,17 @@ spec:
               memory: "2048Mi"
               cpu: "1"
           volumeMounts:
-            - name: map-openbas-data
+            - name: map-openaev-data
               mountPath: /data
       volumes:
-        - name: map-openbas-data
+        - name: map-openaev-data
           persistentVolumeClaim:
-            claimName: pvc-map-openbas
+            claimName: pvc-map-openaev
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-map-openbas
+  name: pvc-map-openaev
   namespace: customer-all
 spec:
   accessModes:
@@ -56,71 +56,71 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: le-prod
-    external-dns.alpha.kubernetes.io/hostname: map.openbas.io
+    external-dns.alpha.kubernetes.io/hostname: map.openaev.io
     external-dns.alpha.kubernetes.io/ttl: "120"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^/?$ https://map.openbas.io/styles/filigran-dark2/#2/0/0 permanent;
-  name: map-openbas-ingress
+      rewrite ^/?$ https://map.openaev.io/styles/filigran-dark2/#2/0/0 permanent;
+  name: map-openaev-ingress
   namespace: customer-all
 spec:
   ingressClassName: nginx
   rules:
-  - host: map.openbas.io
+  - host: map.openaev.io
     http:
       paths:
       - backend:
           service:
-            name: map-openbas
+            name: map-openaev
             port:
               number: 80
         path: /
         pathType: Prefix
   tls:
   - hosts:
-    - map.openbas.io
-    secretName: map-openbas-cert
+    - map.openaev.io
+    secretName: map-openaev-cert
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: le-prod
-    external-dns.alpha.kubernetes.io/hostname: map.openbas.io
+    external-dns.alpha.kubernetes.io/hostname: map.openaev.io
     external-dns.alpha.kubernetes.io/ttl: "120"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^/?$ https://map.openbas.io/styles/filigran-dark/#2/0/0 permanent;
-      rewrite ^/styles/luatix-(.*)$ https://map.openbas.io/styles/filigran-$1 permanent;
-  name: map-openbas-ingress
+      rewrite ^/?$ https://map.openaev.io/styles/filigran-dark/#2/0/0 permanent;
+      rewrite ^/styles/luatix-(.*)$ https://map.openaev.io/styles/filigran-$1 permanent;
+  name: map-openaev-ingress
   namespace: customer-all
 spec:
   ingressClassName: nginx
   rules:
-  - host: map.openbas.io
+  - host: map.openaev.io
     http:
       paths:
       - backend:
           service:
-            name: map-openbas
+            name: map-openaev
             port:
               number: 80
         path: /
         pathType: Prefix
   tls:
   - hosts:
-    - map.openbas.io
-    secretName: map-openbas-cert
+    - map.openaev.io
+    secretName: map-openaev-cert
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: map-openbas
+  name: map-openaev
   namespace: customer-all
 spec:
   ports:
-  - name: map-openbas
+  - name: map-openaev
     port: 80
     protocol: TCP
     targetPort: 80
   selector:
-    app: map-openbas
+    app: map-openaev
   type: ClusterIP

@@ -1,7 +1,7 @@
 {
   "version": 8,
-  "id": "019be4f9-a687-71e8-9659-8633be62b22a",
-  "name": "Filigran Light",
+  "id": "filigran-light3",
+  "name": "filigran-light3",
   "sources": {
     "openmaptiles": {
       "url": "https://api.maptiler.com/tiles/v3/tiles.json?key={key}",
