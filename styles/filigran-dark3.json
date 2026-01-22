@@ -4276,5 +4276,5 @@
     }
   },
   "glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key={key}",
-  "sprite": "https://cloud.maptiler.com/api/v1/sprites/019a780c-771d-72e1-abab-9f645facbcfb/content"
+  "sprite": ""
 }
