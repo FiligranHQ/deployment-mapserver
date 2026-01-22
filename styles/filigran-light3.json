@@ -6,6 +6,14 @@
     "openmaptiles": {
       "url": "https://api.maptiler.com/tiles/v3/tiles.json?key={key}",
       "type": "vector"
+    },
+    "natural_earth_shaded_relief": {
+      "maxzoom": 6,
+      "tileSize": 256,
+      "tiles": [
+        "https://klokantech.github.io/naturalearthtiles/tiles/natural_earth_2_shaded_relief.raster/{z}/{x}/{y}.png"
+      ],
+      "type": "raster"
     }
   },
   "layers": [
@@ -4044,6 +4052,9 @@
     }
   ],
   "metadata": {
+    "maputnik:license": "https://github.com/maputnik/osm-liberty/blob/gh-pages/LICENSE.md",
+    "maputnik:renderer": "mbgljs",
+    "openmaptiles:version": "3.x",
     "maptiler": {
       "groups": [
         {
