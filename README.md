@@ -1,0 +1,1 @@
+Deploy using the Ansible playbook [here](https://github.com/FiligranHQ/platform/blob/401dfa6c56592d66cc67420d88154b839e2f0a67/playbooks/internal/play_maptiles-server.yml), on eu-west-production or eu-west-staging inventory
